@@ -1,3 +1,15 @@
+## PROJECT
+
+.env
+matterbridge*
+!*toml
+matterbridge.toml
+session-*.gob
+output.txt
+
+
+## DEFAULT
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
