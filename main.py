@@ -70,6 +70,7 @@ if __name__ == "__main__":
                     actual_wids.add(wid)
         
         actual_wids.discard(wid_input)
+        print(f"Se han encontrado {len(actual_wids)} grupos!")
         generate_toml(wid_input, actual_wids)
 
         # Ejecuta la configuración por 1 hora
