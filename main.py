@@ -77,14 +77,20 @@ if __name__ == "__main__":
             for line in lines:
                 if "@g.us" in line:
                     # Se accede al whatsapp id (wid)
-                    wid = line.split(' ')[2].split('"')[1]
-                    # Se añade el wid al set
-                    actual_wids.add(wid)
-        
+                    data = line.split('"')[3].split(' ')
+                    wid = data[0]
+                    name = ' '.join(data[1:])
+                    # Añade solo grupos que cumplan el filtro
+                    if args.nombre:
+                        if args.nombre in name:
+                            actual_wids.add(wid)
+                            print(f"{wid} \t {name}")
+                    else:
+                        actual_wids.add(wid)
+
         actual_wids.discard(wid_input)
         print(f"Se han encontrado {len(actual_wids)} grupos!")
         generate_toml(wid_input, actual_wids)
-
         # Ejecuta la configuración hasta las 4 AM
         now    = dt.datetime.now()
         future = dt.datetime(now.year, now.month, now.day, 4, 0)
