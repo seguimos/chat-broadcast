@@ -1,5 +1,6 @@
 import os
 import subprocess
+import datetime as dt
 from dotenv import load_dotenv
 
 
@@ -73,11 +74,19 @@ if __name__ == "__main__":
         print(f"Se han encontrado {len(actual_wids)} grupos!")
         generate_toml(wid_input, actual_wids)
 
-        # Ejecuta la configuración por 1 hora
-        print("Ejecutando la configuración por 1 hora...")
+        # Ejecuta la configuración hasta las 4 AM
+        now    = dt.datetime.now()
+        future = dt.datetime(now.year, now.month, now.day, 4, 0)
+        if now.hour >= 4:
+            future += dt.timedelta(days=1)
+        wait_time = int((future-now).total_seconds())
+        print("Fecha actual:          ", now)
+        print("Fecha de actualización:", future)
+
+        print("Ejecutando la configuración hasta las 4 AM...")
         p = subprocess.Popen(matterbrige_cmd.split())
         try:
-            p.wait(60*60)
+            p.wait(wait_time)
         except subprocess.TimeoutExpired:
             p.kill()
         
