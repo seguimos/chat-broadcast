@@ -1,16 +1,27 @@
 import os
 import subprocess
+import argparse
 import datetime as dt
 from dotenv import load_dotenv
 
 
 
 
+# Variables de entorno
 load_dotenv()
-
 wid_input  = os.getenv('WID_INPUT')
 executable = os.getenv('EXECUTABLE')
 
+# Argumentos de línea de comandos
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "-n", "--nombre",
+    help="Una frase común que deben contener todos los grupos de llegada.",
+    type=str
+)
+args = parser.parse_args()
+
+# 
 logFilename    = "output.txt"
 searchFilename = "searchgroups.toml"
 baseFilename   = "basefile.toml"
