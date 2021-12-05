@@ -21,7 +21,7 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-# 
+# Constantes
 logFilename    = "output.txt"
 searchFilename = "searchgroups.toml"
 baseFilename   = "basefile.toml"
@@ -62,6 +62,17 @@ def generate_toml(wid_input, wids_output, basefile=baseFilename, outfile=tomlFil
         file.write(content)
     return content
 
+# Si existe lee la lista negra
+def read_blacklist(filename="blacklist.txt"):
+    if not os.path.exists(filename):
+        with open(filename, 'w') as file:
+            pass
+        return []
+    with open(filename, 'r') as file:
+        blacklist = [line.strip() for line in file.readlines()]
+    return blacklist
+
+
 
 
 
@@ -70,6 +81,7 @@ if __name__ == "__main__":
 
     while True:
         print("Actualizando grupos...")
+        blacklist = read_blacklist()
         os.system(search_cmd)
         with open(logFilename, 'r') as file:
             actual_wids = set()
@@ -81,6 +93,8 @@ if __name__ == "__main__":
                     wid = data[0]
                     name = ' '.join(data[1:])
                     # Añade solo grupos que cumplan el filtro
+                    if wid in blacklist:
+                        continue
                     if args.nombre:
                         if args.nombre in name:
                             actual_wids.add(wid)
@@ -91,6 +105,7 @@ if __name__ == "__main__":
         actual_wids.discard(wid_input)
         print(f"Se han encontrado {len(actual_wids)} grupos!")
         generate_toml(wid_input, actual_wids)
+
         # Ejecuta la configuración hasta las 4 AM
         now    = dt.datetime.now()
         future = dt.datetime(now.year, now.month, now.day, 4, 0)

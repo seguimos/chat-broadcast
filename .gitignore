@@ -6,6 +6,7 @@ matterbridge*
 matterbridge.toml
 session-*.gob
 output.txt
+blacklist.txt
 
 
 ## DEFAULT
