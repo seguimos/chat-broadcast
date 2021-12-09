@@ -93,7 +93,7 @@ if __name__ == "__main__":
                     wid = data[0]
                     name = ' '.join(data[1:])
                     # Añade solo grupos que cumplan el filtro
-                    if wid in blacklist:
+                    if wid in blacklist or not name:
                         continue
                     if args.nombre:
                         if args.nombre in name:
