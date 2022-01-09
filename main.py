@@ -19,6 +19,12 @@ parser.add_argument(
     help="Una frase común que deben contener todos los grupos de llegada.",
     type=str
 )
+parser.add_argument(
+    "-o", "--output",
+    help="Nombre del archivo de output a utilizar, de no completarse se utilizará output.txt (autogenerado al comienzo).",
+    type=str,
+    default="output.txt",
+)
 args = parser.parse_args()
 
 # Constantes
@@ -83,7 +89,7 @@ if __name__ == "__main__":
         print("Actualizando grupos...")
         blacklist = read_blacklist()
         os.system(search_cmd)
-        with open(logFilename, 'r') as file:
+        with open(args.output, 'r') as file:
             actual_wids = set()
             lines = file.readlines()
             for line in lines:
