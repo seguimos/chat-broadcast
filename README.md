@@ -16,7 +16,7 @@ pip3 install -r requirements.txt
 
 ### Descargar ejecutable
 
-Debes descargar el ejecutable de matterbrigde (preferentemente versión 1.23.2) correspondiente a tu sistema operativo. Puedes buscarlo [aquí](https://github.com/42wim/matterbridge/releases/tag/v1.23.2).
+Debes descargar el ejecutable de matterbrigde (preferentemente versión 1.23.2) correspondiente a tu sistema operativo. Puedes buscarlo [aquí](https://github.com/42wim/matterbridge/releases).
 
 ### Configuración
 
@@ -55,11 +55,11 @@ Con todo lo anterior ya configurado, solo debes ejecutar:
 python3 main.py -n "[NOMBRE]"
 ```
 
-Donde el parámetro `-n` nos permite filtrar los grupos deseados según su nombre. En `[NOMBRE]` debemos añadir una frase común contenida en todos los nombres de los grupos de llegada. Este parámetro es opcional, por lo que si ejecutas ``python3 main.py` simplemente no se aplicará el filtro.
+Donde el parámetro `-n` nos permite filtrar los grupos deseados según su nombre. En `[NOMBRE]` debemos añadir una frase común contenida en todos los nombres de los grupos de llegada. Este parámetro es opcional, por lo que si ejecutas `python3 main.py` simplemente no se aplicará el filtro.
 
 ## Blacklist
 
-En un archivo `blacklist.txt` ubicado en el directorio raíz puedes agregar los WIDs de grupos que en ningún caso quieres considerar. Añádemos de la forma:
+En un archivo `blacklist.txt` ubicado en el directorio raíz puedes agregar los WIDs de grupos que en ningún caso quieres considerar. Añádelos de la forma:
 
 ``
 123456789123456789@g.us
