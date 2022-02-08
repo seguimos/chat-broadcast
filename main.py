@@ -64,4 +64,7 @@ if __name__ == "__main__":
             chat_id,
             f"🚨 A ocurrido un error en {bot_name}. Esperando {WAITTIME/60:.0f} minutos para reanudar."
         )
-        time.sleep(WAITTIME)
+        try:
+            time.sleep(WAITTIME)
+        except KeyboardInterrupt:
+            exit_handler()
