@@ -42,20 +42,20 @@ def print(*args, **kwargs):
     return builtins.print(now, *args, **kwargs)
 
 
-def exit_handler():
+def exit_handler(*args):
     print(f"Loop terminado")
     bot.send_message(chat_id, f"❌ {bot_name} detenido")
     exit()
 
 
 if __name__ == "__main__":
-    signal.signal(signal.SIGINT, exit_handler)
     signal.signal(signal.SIGTERM, exit_handler)
 
     while True:
         print(f"Ejecutando: {cmd}...")
         bot.send_message(chat_id, f"✅ Ejecutando {bot_name}")
-        os.system(cmd)
+        a = os.system(cmd)
+        print(a)
 
         print(
             f"Ejecución detenida. Esperando {WAITTIME/60:.0f} minutos para reanudar...")
