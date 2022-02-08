@@ -92,7 +92,7 @@ Se enviarán notificaciones cuando comience la ejecución del comando, en la esp
 
 En un archivo `blacklist.txt` ubicado en el directorio raíz puedes agregar los WIDs de grupos que en ningún caso quieres considerar al momento de generar un archivo `matterbridge.toml` con `generator.py`. Añádelos de la forma:
 
-``
+```
 123456789123456789@g.us
 234567891234567891@g.us
 ...
@@ -102,6 +102,5 @@ En un archivo `blacklist.txt` ubicado en el directorio raíz puedes agregar los 
 # Referencias
 
 - Para más información sobre el funcionamiento de matterbridge, puedes revisar [su documentación](https://github.com/42wim/matterbridge).
-```
 
 - Para más información del Wrapper de Telegram utilizado, revisar [su documentación](https://github.com/python-telegram-bot/python-telegram-bot).
