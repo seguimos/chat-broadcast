@@ -45,7 +45,7 @@ if __name__ == "__main__":
     try:
         while True:
             print(f"Ejecutando: {cmd}...")
-            bot.send_message(chat_id, f"✅ Ejecutando {bot_name}...")
+            bot.send_message(chat_id, f"✅ Ejecutando {bot_name}")
             os.system(cmd)
 
             print(
@@ -53,7 +53,7 @@ if __name__ == "__main__":
             print("Presiona Ctrl+C para detener definitivamente.")
             bot.send_message(
                 chat_id,
-                f"🚨 A ocurrido un error en {bot_name}. Esperando {WAITTIME/60:.0f} minutos para reanudar..."
+                f"🚨 A ocurrido un error en {bot_name}. Esperando {WAITTIME/60:.0f} minutos para reanudar."
             )
             time.sleep(WAITTIME)
     except:
