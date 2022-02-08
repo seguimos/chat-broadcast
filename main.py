@@ -1,124 +1,62 @@
 import os
-import subprocess
+import time
+import logging
+import builtins
 import argparse
-import datetime as dt
+from datetime import datetime as dt
 from dotenv import load_dotenv
+from telegram.ext import Updater
 
 
-
-
-# Variables de entorno
-load_dotenv()
-wid_input  = os.getenv('WID_INPUT')
-executable = os.getenv('EXECUTABLE')
-
-# Argumentos de línea de comandos
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    "-n", "--nombre",
-    help="Una frase común que deben contener todos los grupos de llegada.",
-    type=str
-)
+# Argumentos
+parser = argparse.ArgumentParser(description='Ejecuta un comando en loop.')
+parser.add_argument('-c', '--cmd', type=str,
+                    help='Ingresa el comando a ejecutar')
 args = parser.parse_args()
 
 # Constantes
-logFilename    = "output.txt"
-searchFilename = "searchgroups.toml"
-baseFilename   = "basefile.toml"
-tomlFilename   = "matterbridge.toml"
-search_cmd      = f'./{executable} -conf {searchFilename} > {logFilename}'
-matterbrige_cmd = f'./{executable} -conf {tomlFilename}'
+WAITTIME = 10*60
+DEFAULT_CMD = "/usr/bin/matterbridge -conf /etc/bot/matterbridge.toml"
+
+# Variables de entorno
+load_dotenv()
+bot_name = os.getenv('BOT_NAME')
+if args.cmd:
+    cmd = args.cmd
+else:
+    cmd = os.getenv('CMD', default=DEFAULT_CMD)
+token = os.getenv('TOKEN')
+chat_id = os.getenv('CHAT_ID')
 
 
-
-# Genera un bridge-in con el wid entregado
-def generate_in(wid):
-    return f'''
-
-# 0
-[[gateway.in]]
-account="whatsapp.mywhatsapp"
-channel="{wid}"
-'''
-
-# Genera un bridge-out con el wid entregado
-def generate_out(wid, i):
-    return f'''
-# {i}
-[[gateway.out]]
-account="whatsapp.mywhatsapp"
-channel="{wid}"
-'''
-
-# Genera un archivo toml con los wids entregados
-def generate_toml(wid_input, wids_output, basefile=baseFilename, outfile=tomlFilename):
-    content = ""
-    with open(basefile, 'r') as file:
-        content += file.read()
-    content += generate_in(wid_input)
-    for i, wid in enumerate(wids_output):
-        content += generate_out(wid, i+1)
-    with open(outfile, 'w') as file:
-        file.write(content)
-    return content
-
-# Si existe lee la lista negra
-def read_blacklist(filename="blacklist.txt"):
-    if not os.path.exists(filename):
-        with open(filename, 'w') as file:
-            pass
-        return []
-    with open(filename, 'r') as file:
-        blacklist = [line.strip() for line in file.readlines()]
-    return blacklist
+# Telegram
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+updater = Updater(token=token, use_context=True)
+bot = updater.bot
 
 
-
+def print(*args, **kwargs):
+    now = f'[{dt.now().strftime("%m-%d-%Y %H:%M:%S")}]'
+    return builtins.print(now, *args, **kwargs)
 
 
 if __name__ == "__main__":
-    wids_output = set()
+    try:
+        while True:
+            print(f"Ejecutando: {cmd}...")
+            bot.send_message(chat_id, f"✅ Ejecutando {bot_name}")
+            os.system(cmd)
 
-    while True:
-        print("Actualizando grupos...")
-        blacklist = read_blacklist()
-        os.system(search_cmd)
-        with open(logFilename, 'r') as file:
-            actual_wids = set()
-            lines = file.readlines()
-            for line in lines:
-                if "@g.us" in line:
-                    # Se accede al whatsapp id (wid)
-                    data = line.split('"')[3].split(' ')
-                    wid = data[0]
-                    name = ' '.join(data[1:])
-                    # Añade solo grupos que cumplan el filtro
-                    if wid in blacklist or not name:
-                        continue
-                    if args.nombre:
-                        if args.nombre in name:
-                            actual_wids.add(wid)
-                            print(f"{wid} \t {name}")
-                    else:
-                        actual_wids.add(wid)
-
-        actual_wids.discard(wid_input)
-        print(f"Se han encontrado {len(actual_wids)} grupos!")
-        generate_toml(wid_input, actual_wids)
-
-        # Ejecuta la configuración hasta las 4 AM
-        now    = dt.datetime.now()
-        future = dt.datetime(now.year, now.month, now.day, 4, 0)
-        if now.hour >= 4:
-            future += dt.timedelta(days=1)
-        wait_time = int((future-now).total_seconds())
-        print("Fecha actual:          ", now)
-        print("Fecha de actualización:", future)
-
-        print("Ejecutando la configuración hasta las 4 AM...")
-        p = subprocess.Popen(matterbrige_cmd.split())
-        try:
-            p.wait(wait_time)
-        except subprocess.TimeoutExpired:
-            p.kill()
-        
+            print(
+                f"Ejecución detenida. Esperando {WAITTIME/60:.0f} minutos para reanudar...")
+            print("Presiona Ctrl+C para detener definitivamente.")
+            bot.send_message(
+                chat_id,
+                f"🚨 A ocurrido un error en {bot_name}. Esperando {WAITTIME/60:.0f} minutos para reanudar."
+            )
+            time.sleep(WAITTIME)
+    except:
+        print(f"Loop terminado")
+        bot.send_message(chat_id, f"❌ {bot_name} detenido")
+        exit()
