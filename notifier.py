@@ -3,6 +3,7 @@
 import requests
 from logging import Handler, Formatter
 import logging
+from datetime import datetime as dt
 
 
 class RequestsHandler(Handler):
@@ -33,7 +34,7 @@ class LogstashFormatter(Formatter):
         return "{message}".format(message=record.msg)
 
 
-def send_message(message, token, chat_id, level=logging.INFO, logger_name='logger'):
+def send_message(message, token, chat_id, level=logging.INFO, logger_name=dt.now().strftime("%m/%d/%Y, %H:%M:%S")):
     if not (token and chat_id):
         return
     logger = logging.getLogger(logger_name)
