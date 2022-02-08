@@ -30,7 +30,7 @@ chat_id = os.getenv('CHAT_ID')
 
 
 # Telegram
-logging.basicConfig(level=logging.DEBUG,
+logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 updater = Updater(token=token, use_context=True)
 bot = updater.bot
