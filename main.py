@@ -1,5 +1,6 @@
 import os
 import time
+import signal
 import logging
 import builtins
 import argparse
@@ -41,22 +42,26 @@ def print(*args, **kwargs):
     return builtins.print(now, *args, **kwargs)
 
 
-if __name__ == "__main__":
-    try:
-        while True:
-            print(f"Ejecutando: {cmd}...")
-            bot.send_message(chat_id, f"✅ Ejecutando {bot_name}")
-            os.system(cmd)
+def exit_handler():
+    print(f"Loop terminado")
+    bot.send_message(chat_id, f"❌ {bot_name} detenido")
+    exit()
 
-            print(
-                f"Ejecución detenida. Esperando {WAITTIME/60:.0f} minutos para reanudar...")
-            print("Presiona Ctrl+C para detener definitivamente.")
-            bot.send_message(
-                chat_id,
-                f"🚨 A ocurrido un error en {bot_name}. Esperando {WAITTIME/60:.0f} minutos para reanudar."
-            )
-            time.sleep(WAITTIME)
-    except:
-        print(f"Loop terminado")
-        bot.send_message(chat_id, f"❌ {bot_name} detenido")
-        exit()
+
+if __name__ == "__main__":
+    signal.signal(signal.SIGINT, exit_handler)
+    signal.signal(signal.SIGTERM, exit_handler)
+
+    while True:
+        print(f"Ejecutando: {cmd}...")
+        bot.send_message(chat_id, f"✅ Ejecutando {bot_name}")
+        os.system(cmd)
+
+        print(
+            f"Ejecución detenida. Esperando {WAITTIME/60:.0f} minutos para reanudar...")
+        print("Presiona Ctrl+C para detener definitivamente.")
+        bot.send_message(
+            chat_id,
+            f"🚨 A ocurrido un error en {bot_name}. Esperando {WAITTIME/60:.0f} minutos para reanudar."
+        )
+        time.sleep(WAITTIME)
