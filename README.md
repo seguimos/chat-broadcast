@@ -41,16 +41,13 @@ Esto te entregará varias cosas, entre ellas una lista de `ids` de grupos de Wha
 Debes crear un archivo de nombre `.env` en la raíz del repositorio. Este archivo debe contener:
 
 ```
-
-## main.py
+# main.py
 BOT_NAME=[NOMBRE_BOT]
 CMD=matterbridge -conf matterbridge.toml
 TOKEN=[TELEGRAM_BOT_TOKEN]
 CHAT_ID=[TELEGRAM_CHAT_ID]
 
-
-
-## generator.py
+# generator.py
 EXECUTABLE=matterbridge-1.23.2-darwin-64bit
 WID_INPUT=123456789123456789@g.us
 ```
