@@ -1,10 +1,11 @@
 import os
 import time
+import logging
 import builtins
 import argparse
 from datetime import datetime as dt
 from dotenv import load_dotenv
-from notifier import send_message
+from telegram.ext import Updater
 
 
 # Argumentos
@@ -28,6 +29,13 @@ token = os.getenv('TOKEN')
 chat_id = os.getenv('CHAT_ID')
 
 
+# Telegram
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+updater = Updater(token=token, use_context=True)
+bot = updater.bot
+
+
 def print(*args, **kwargs):
     now = f'[{dt.now().strftime("%m-%d-%Y %H:%M:%S")}]'
     return builtins.print(now, *args, **kwargs)
@@ -37,19 +45,18 @@ if __name__ == "__main__":
     try:
         while True:
             print(f"Ejecutando: {cmd}...")
-            send_message(f"✅ Ejecutando {bot_name}...", token, chat_id)
+            bot.send_message(chat_id, f"✅ Ejecutando {bot_name}...")
             os.system(cmd)
 
             print(
                 f"Ejecución detenida. Esperando {WAITTIME/60:.0f} minutos para reanudar...")
             print("Presiona Ctrl+C para detener definitivamente.")
-            send_message(
-                f"🚨 A ocurrido un error en {bot_name}. Esperando {WAITTIME/60:.0f} minutos para reanudar...",
-                token, chat_id
+            bot.send_message(
+                chat_id,
+                f"🚨 A ocurrido un error en {bot_name}. Esperando {WAITTIME/60:.0f} minutos para reanudar..."
             )
             time.sleep(WAITTIME)
     except:
         print(f"Loop terminado")
-        send_message(
-            f"❌ {bot_name} detenido", token, chat_id)
+        bot.send_message(chat_id, f"❌ {bot_name} detenido")
         exit()
